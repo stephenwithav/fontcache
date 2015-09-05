@@ -5,7 +5,10 @@ A simple font-caching utility enabled by golang/freetype.
 A simple example:
 
 ```go
-import "github.com/stephenwithav/fontcache"
+import (
+    "log"
+    "github.com/stephenwithav/fontcache"
+)
 
 func main() {
     fontPath := "./fonts"
