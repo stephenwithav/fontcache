@@ -1,6 +1,6 @@
 ## fontcache
 
-A simple font-caching utility enabled by golang/freetype.
+A simple font-caching utility enabled by [https://github.com/golang/freetype/pull/19](golang/freetype#19).
 
 A simple example:
 
