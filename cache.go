@@ -16,6 +16,8 @@ import (
 type Cache map[string]Styles
 type Styles map[string]*truetype.Font
 
+const fallbackId = "_fallback"
+
 func New() Cache {
 	return make(Cache)
 }
@@ -25,15 +27,37 @@ func (c Cache) Init(path string) {
 }
 
 func (c Cache) Get(name, style string) (*truetype.Font, error) {
+	var err error
 	if sm, ok := c[strings.ToLower(name)]; ok {
 		if f, ok := sm[strings.ToLower(style)]; ok {
 			return f, nil
 		}
-		return nil, errors.New(fmt.Sprintf("style %q not supported in font %q", style, name))
+
+		err = errors.New(fmt.Sprintf("style %q not supported in font %q", style, name))
 	}
 
-	return nil, errors.New(fmt.Sprintf("font %q not found in cache", name))
+	if s, ok := c[fallbackId]; ok {
+		return s[fallbackId], nil
+	}
 
+	if err == nil {
+		err = errors.New(fmt.Sprintf("font %q not found in cache", name))
+	}
+
+	return nil, err
+
+}
+
+func (c Cache) SetFallbackFont(name, style string) error {
+	if font, err := c.Get(name, style); err == nil {
+		s := make(Styles)
+		s[fallbackId] = font
+		c[fallbackId] = s
+	} else {
+		return err
+	}
+
+	return nil
 }
 
 func (c Cache) loadFont(path string, info os.FileInfo, err error) error {
