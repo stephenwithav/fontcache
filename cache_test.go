@@ -22,12 +22,40 @@ func TestGet(t *testing.T) {
 	}{
 		{"Luxi Sans", "Regular"},
 		{"Luxi Mono", "Regular"},
+		{"Luxi Serif", "Regular"},
 	}
 
 	for _, tt := range testcases {
 		_, err := fc.Get(tt.name, tt.style)
 		if err != nil {
 			t.Errorf("error: %s", err)
+		}
+	}
+}
+
+func TestFallback(t *testing.T) {
+	testcases := []struct {
+		name, style string
+	}{
+		{"Luxi Sans", "Luxi Sans"},
+		{"Luxi Monooooooo", "Regular"},
+		{"Luxi Seriqzxf", "Regular"},
+	}
+
+	expectedName, expectedStyle := "Luxi Sans", "Regular"
+	fc.SetFallbackFont(expectedName, expectedStyle)
+
+	for _, tt := range testcases {
+		font, err := fc.Get(tt.name, tt.style)
+		if err != nil {
+			t.Errorf("error: %s", err)
+		} else {
+			if got := font.Name(truetype.NameIDFontFamily); got != expectedName {
+				t.Errorf("wanted familyName of %q, got %q", expectedName, got)
+			}
+			if got := font.Name(truetype.NameIDFontSubfamily); got != expectedStyle {
+				t.Errorf("wanted subfamilyName of %q, got %q", expectedStyle, got)
+			}
 		}
 	}
 }
