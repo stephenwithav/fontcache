@@ -1,8 +1,11 @@
 package fontcache_test
 
 import (
+	"fmt"
+	"log"
 	"testing"
 
+	"github.com/golang/freetype/truetype"
 	"github.com/stephenwithav/fontcache"
 )
 
@@ -27,4 +30,22 @@ func TestGet(t *testing.T) {
 			t.Errorf("error: %s", err)
 		}
 	}
+}
+
+func Example() {
+	fontPath := "./fonts"
+
+	fc := fontcache.New()
+	fc.Init(fontPath)
+
+	// Retrieve font by name for use in a program.
+	font, err := fc.Get("Luxi Sans", "Regular")
+	if err != nil {
+		log.Fatalf("%s", err)
+	}
+
+	func(f *truetype.Font) {
+		fmt.Printf("Do something with %s", f.Name(truetype.NameIDFontFamily))
+	}(font)
+	// Output: Do something with Luxi Sans
 }
