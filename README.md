@@ -16,7 +16,7 @@ func main() {
     // Retrieve font by name for use in a program.
     font, err := fc.Get("Luxi Sans", "Regular")
     if err != nil {
-	    log.Fatalf(err)
+	    log.Fatalf("%s", err)
     }
 
     DoStuff(font)
